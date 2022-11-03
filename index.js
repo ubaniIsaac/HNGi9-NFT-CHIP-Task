@@ -3,7 +3,6 @@ const fs = require('fs');
 const path = require('path')
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const sha256 = require('sha256');
-const crypto = require("crypto");
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
 
