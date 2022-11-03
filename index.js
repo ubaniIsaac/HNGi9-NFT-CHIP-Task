@@ -33,16 +33,16 @@ fs.createReadStream(filePath)
     }))
 
     .on("data", async (row) => {
-
-        const temp = row["Series Number"] ?? "";
-        if (temp.toLowerCase().startsWith("team")) {
-            teamName = temp;
+        const name = row["TEAM NAMES"] ?? "";
+        if (name.toLowerCase().startsWith("team")) {
+            teamName = name;
         }
-
         if (row["Filename"]) {
-            nfts.push({ ...row, Team: teamName });
+            nfts.push({ ...row, teamName: teamName });
+            row["Team Name"] = teamName
             dataArray.push(row);
         } else {
+            row["Team Name"] = teamName
             dataArray.push(row);
         }
     })
@@ -52,7 +52,7 @@ fs.createReadStream(filePath)
                 format: "CHIP-0007",
                 name: row["Name"],
                 description: row["Description"],
-                minting_tool: row["Team"],
+                minting_tool: row["teamName"],
                 sensitive_content: false,
                 series_number: parseInt(row["Series Number"]),
                 series_total: nfts.length,
@@ -78,8 +78,8 @@ fs.createReadStream(filePath)
                 },
             };
 
-            if (row["Attributes"]) {
-                row["Attributes"].split(",").forEach((attribute) => {
+            if (row["attributes"]) {
+                row["attributes"].split(";").forEach((attribute) => {
                     if (attribute) {
                         try {
                             const values = attribute.split(":");
@@ -108,14 +108,16 @@ fs.createReadStream(filePath)
 
             const csvWriter = createCsvWriter({
                 path: `${filename}.output.csv`,
-                header: [{ id: 'Series_Number', title: 'Series_Number' },
-                { id: 'Filename', title: 'Filename' },
-                { id: 'Name', title: 'Name' },
-                { id: 'Description', title: 'Description' },
-                { id: 'Gender', title: 'Gender' },
-                { id: 'Attributes', title: 'Attributes' },
-                { id: 'UUID', title: 'UUID' },
-                { id: 'HASH', title: 'HASH' }],
+                header: [
+                    { id: 'Team Name', title: 'Team Name' },
+                    { id: 'Series Number', title: 'Series Number' },
+                    { id: 'Filename', title: 'Filename' },
+                    { id: 'Name', title: 'Name' },
+                    { id: 'Description', title: 'Description' },
+                    { id: 'Gender', title: 'Gender' },
+                    { id: 'attributes', title: 'attributes' },
+                    { id: 'UUID', title: 'UUID' },
+                    { id: 'HASH', title: 'HASH' }],
             });
 
             csvWriter
