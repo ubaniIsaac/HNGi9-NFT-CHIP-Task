@@ -2,7 +2,6 @@ const { parse } = require('csv-parse');
 const fs = require('fs');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const sha256 = require('sha256');
-const json2csv = require('json2csv');
 const dataArray = [];
 
 const csvWriter = createCsvWriter({
@@ -30,9 +29,6 @@ fs.createReadStream("HNGi9 CSV FILE - Sheet1.csv")
         const dataHash = sha256(JSON.stringify(row))
         row.HASH = dataHash;
         dataArray.push(row);
-        // console.log(dataArray)
-
-
 
         const format = {
             "format": "CHIP-0007",
@@ -83,23 +79,11 @@ fs.createReadStream("HNGi9 CSV FILE - Sheet1.csv")
                 else {
                 }
             });
-
-        // fs.writeFileSync("hashing.output.csv", newCSV,
-        //     (err) => {
-        //         if (err)
-        //             console.log(err);
-        //         else {
-        //         }
-        //     });
-
     })
 
     .on('end', function () {
-        const newCSV = JSON.stringify(dataArray)
-
-        csvWriter.writeRecords(dataArray)       // returns a promise
+        csvWriter.writeRecords(dataArray)
             .then(() => {
                 console.log('...Done');
             });
-        // fs.writeFileSync("hashing.output.csv", newCSV);
     });
