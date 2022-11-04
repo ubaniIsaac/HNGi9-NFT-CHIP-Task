@@ -20,7 +20,7 @@ const argv = yargs(hideBin(process.argv))
 
 let teamName = "";
 const dataArray = [];
-const nfts = [];
+const chips = [];
 const filePath = argv.file;
 const filename = path.basename(filePath, ".csv");
 
@@ -38,7 +38,7 @@ fs.createReadStream(filePath)
             teamName = name;
         }
         if (row["Filename"]) {
-            nfts.push({ ...row, teamName: teamName });
+            chips.push({ ...row, teamName: teamName });
             row["Team Name"] = teamName
             dataArray.push(row);
         } else {
@@ -47,7 +47,7 @@ fs.createReadStream(filePath)
         }
     })
     .on("end", function () {
-        nfts.forEach((row) => {
+        chips.forEach((row) => {
             const format = {
                 format: "CHIP-0007",
                 name: row["Name"],
